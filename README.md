@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/KrzysztofSakowski/bioinf.svg.svg?branch=master)](https://travis-ci.org/KrzysztofSakowski/bioinf.svg)
+[![Build Status](https://travis-ci.org/KrzysztofSakowski/bioinf.svg?branch=master)](https://travis-ci.org/KrzysztofSakowski/bioinf.svg)
 
 # Academy project for bioinformatics course
 ## Subject: gplmDCA
