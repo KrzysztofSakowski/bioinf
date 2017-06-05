@@ -1,4 +1,4 @@
-from functions.gapMat import gapMat
+from functions import gapMat
 import numpy as np
 
 def test_sequence():
