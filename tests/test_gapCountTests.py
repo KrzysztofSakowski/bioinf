@@ -1,4 +1,4 @@
-from functions import gapMat
+from functions import gapCount
 import numpy as np
 
 def test_sequence():
@@ -10,13 +10,7 @@ def test_sequence():
                 data[i] = int(num)
                 i += 1
 
-    outputRef = np.zeros((500,1))
-    lH, rH = gapMat(data.astype(dtype="int"))
-    lH = lH.astype(dtype="int")
+    outputRef = np.zeros((500, 1))
+    lH, rH = gapCount(data.astype(dtype="int"))
     rH = rH.astype(dtype="int")
-
-    assert(np.array_equal(lH, outputRef))
     assert(np.array_equal(rH, outputRef))
-
-
-
