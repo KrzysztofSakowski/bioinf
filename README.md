@@ -6,3 +6,7 @@
 Implementacja algorytmu gplmDCA. Dostępny kod wzorcowy w matlabie.
 Artykuł opisujący metodę: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4191875/
 Program w matlabie: http://gplmdca.aurell.org/
+
+
+# Notes:
+* https://docs.scipy.org/doc/scipy/reference/optimize.minimize-bfgs.html
