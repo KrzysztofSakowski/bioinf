@@ -6,7 +6,7 @@ def gapCount(p_matrix):
     if len(p_matrix.shape) > 1:
         M = p_matrix.shape[1]
     else:
-        M = 0
+        M = 1
     gapStretches = np.zeros((N, N), dtype=np.float)
     gapStretchesHist = np.zeros((N, 1), dtype=np.float)
 
