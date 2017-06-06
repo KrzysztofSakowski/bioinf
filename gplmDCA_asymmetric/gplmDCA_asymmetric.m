@@ -28,7 +28,7 @@ function gplmDCA_asymmetric(fastafile,outputfile, lambda_h,lambda_J,lambda_G,rew
     options.progTol=1e-9;   	%default: 1e-9
     options.Display='off';
 
-%    addpath(genpath(pwd))
+    addpath(genpath(pwd))
 
     
 %Read inputfile (removing inserts), remove duplicate sequences, and calculate weights and B_eff.
@@ -75,7 +75,7 @@ function gplmDCA_asymmetric(fastafile,outputfile, lambda_h,lambda_J,lambda_G,rew
     w=zeros(q+q^2*(N-1)+nrGapParam,N); %Matrix in which to store parameter estimates (column r will contain estimates from g_r).
 %Run optimizer.
     if nr_of_cores>1
-        matlabpool('open',nr_of_cores)   
+        parpool('local',nr_of_cores)   
         tic
         parfor r=1:N
             disp(strcat('Minimizing g_r for node r=',int2str(r)))       
@@ -83,7 +83,9 @@ function gplmDCA_asymmetric(fastafile,outputfile, lambda_h,lambda_J,lambda_G,rew
             w(:,r)=wr;
         end
         toc
-        matlabpool('close')
+        poolobj = parpool;
+
+        delete(poolobj)
     else
         tic
         for r=1:N

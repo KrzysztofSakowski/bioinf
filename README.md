@@ -10,3 +10,6 @@ Program w matlabie: http://gplmdca.aurell.org/
 
 # Notes:
 * https://docs.scipy.org/doc/scipy/reference/optimize.minimize-bfgs.html
+* Typical call for matlab function : gplmDCA_asymmetric('fasta.fas','output.out',0.01,0.01,0.001,0.1,2,2)
+* https://www.mathworks.com/help/matlab/matlab_external/table-of-mex-file-source-code-files.html - mexref
+* http://cens.ioc.ee/local/man/matlab/techdoc/apiref/ - mexref
