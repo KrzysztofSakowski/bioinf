@@ -7,8 +7,8 @@ def gapMat(p_matrix):
         M = p_matrix.shape[1]
     else:
         M = 1
-    leftGapMat = np.zeros((M, N), dtype=float)
-    rightGapMat = np.zeros((M, N), dtype=float)
+    leftGapMat = np.zeros((N, M), dtype=float)
+    rightGapMat = np.zeros((N, M), dtype=float)
 
     for m in range(M):
         k1 = 0
