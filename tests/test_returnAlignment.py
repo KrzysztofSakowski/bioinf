@@ -10,7 +10,6 @@ def test_sequence():
                 outputRef[i] = int(num)
                 i += 1
     outputRef = np.add(outputRef,1)
-    print(outputRef)
 
     N, B, q, Y = returnAlignment("fasta.fas")
 
