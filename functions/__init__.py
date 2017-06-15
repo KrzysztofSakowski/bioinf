@@ -3,3 +3,4 @@ __all__ = ['gapMat' 'gapCount']
 from functions.gapMat import gapMat
 from functions.gapCount import gapCount
 from functions.calcInverseWeights import calcInverseWeights
+from functions.returnAlignment import returnAlignment
