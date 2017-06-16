@@ -3,6 +3,7 @@ from functions import returnAlignment
 from functions import gapMat
 from functions import gapCount
 from functions import calcInverseWeights
+from functions import min_g_r
 
 
 def gplmDCA_asymmetric(fastafile, outputfile, lambda_h, lambda_J, lambda_G, \
@@ -30,7 +31,7 @@ def gplmDCA_asymmetric(fastafile, outputfile, lambda_h, lambda_J, lambda_G, \
         else:
             M = 1
 
-    nrGapParam = M * (N - (M + 1) / 2 + 1)
+    nrGapParam = np.int32(M * (N - (M + 1) / 2 + 1))
 
     print ("Maximum gap length: ", M)
 
@@ -46,3 +47,24 @@ def gplmDCA_asymmetric(fastafile, outputfile, lambda_h, lambda_J, lambda_G, \
     B_eff = np.sum(weights)
 
     print("### N = ", N, "B_with_id_seq = ", B_with_id_seq, "B = ", B, "B_eff = ", B_eff, "q = ", q)
+
+    #Prepare inputs to optimizer.
+    field_lambda = lambda_h * B_eff
+    coupling_lambda = lambda_J * B_eff / 2
+    gap_lambda = lambda_G * B_eff / N
+
+    Y = np.array(Y, dtype=np.int32)
+    q = np.int32(q)
+    w = np.zeros((q + q**2 * (N - 1) + nrGapParam, N), dtype=np.int32)
+
+    if nr_of_cores > 1:
+        #nothing yet
+        return -1
+    else:
+        for r in range(N):
+            print("Minimizing g_r for node r=", r)
+            wr = min_g_r(Y, weights, N, q, field_lambda, coupling_lambda, gap_lambda, r, M, \
+                         nrGapParam, lH, rH, options)
+            w[:][r] = wr
+
+    print(w.shape[0])
