@@ -5,7 +5,7 @@ from functions import gapCount
 from functions import calcInverseWeights
 from functions import min_g_r
 
-
+#TODO Test most outputs against matlab
 def gplmDCA_asymmetric(fastafile, outputfile, lambda_h, lambda_J, lambda_G, \
                        reweighting_threshold, nr_of_cores, M):
     options = list()
@@ -58,6 +58,7 @@ def gplmDCA_asymmetric(fastafile, outputfile, lambda_h, lambda_J, lambda_G, \
     w = np.zeros((q + q ** 2 * (N - 1) + nrGapParam, N), dtype=np.int32)
 
     if nr_of_cores > 1:
+        #TODO Add threading
         # nothing yet
         return -1
     else:
@@ -75,8 +76,34 @@ def gplmDCA_asymmetric(fastafile, outputfile, lambda_h, lambda_J, lambda_G, \
 
     for i in range(N):
         for j in range(i + 1, N + 1, 1):
+            #TODO Fix assigning
             # Jtemp1[:][:][l] = JJ[:][:][j - 1][i]  # J_ij as estimated from g_i
             # Jtemp2[:][:][l] = np.transpose(JJ[:][:][i][j])  # J_ij as estimated from g_j
             l += 1
 
     G = w[q + q ** 2 * (N - 1):, :]
+
+    #TODO Needs previous values
+    #Shift the coupling estimates into the Ising gauge.
+    J1 = np.zeros((q, q, N * (N - 1) // 2), dtype=np.int32)
+    J2 = np.zeros((q, q, N * (N - 1) // 2), dtype=np.int32)
+
+    for l in range((N * (N - 1) // 2) + 1):
+        #J1[:][:][l] = JTemp1[:][:][l] -
+
+
+    #TODO Needs J
+    #Calculate frob. norms FN_ij.
+    NORMS = np.zeros(N,N)
+    l = 1
+    for l in range(N):
+        for j in range(i+1, N+1, 1):
+            # NORMS[i][j] = np.linalg.norm(J[:][:][l], 'fro')
+            # NORMS[j][i] = NORMS[j][i]
+            l += 1
+
+    #Calculate final scores, CN_ij=FN_ij-(FN_i-)(FN_-j)/(FN_--), where '-'
+    #denotes average.
+
+
+
