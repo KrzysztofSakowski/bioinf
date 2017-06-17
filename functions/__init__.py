@@ -5,3 +5,4 @@ from functions.gapCount import gapCount
 from functions.calcInverseWeights import calcInverseWeights
 from functions.returnAlignment import returnAlignment
 from functions.min_g_r import min_g_r
+from functions.g_rC import GindStart, g_rC

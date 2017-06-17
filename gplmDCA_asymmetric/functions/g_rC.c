@@ -104,53 +104,53 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
     nodeBel is the conditional probability P(sigma_r=s|sigma_{\r}=sigma^(i)_{\r}), i.e., nodeBel(s) = e^[ logPot(s) ] / sum_l e^[ logPot(l) ].
     z is the denominator of nodeBel.*/
 
-    for(s=0;s < nStates;s++) {
-        logPot[s] = h_r[s];
+        for(s=0;s < nStates;s++) {
+            logPot[s] = h_r[s];
 
-    }
-
-    for(n = 0;n < nNodes;n++) {
-        if(n!=r) {
-        y2 = y[i + nInstances*n];
-        for(s=0; s<nStates; s++) {
-            logPot[s] += J_r[s+nStates*(y2+nStates*(n-(n>r)))];
-        }
         }
 
-    }
+        for(n = 0;n < nNodes;n++) {
+            if(n!=r) {
+                y2 = y[i + nInstances*n];
+                for(s=0; s<nStates; s++) {
+                    logPot[s] += J_r[s+nStates*(y2+nStates*(n-(n>r)))];
+                }
+            }
 
-	/* Add GAP parameters */
-	/* Restitute r by a gap */
-	length=1;
-	index=(r+1);
-	if(r<nNodes-1)
-		length=length+rH[i+nInstances*(r+1)];
-	
-	if(r>0){
-		length=length+lH[i+nInstances*(r-1)];
-		index=index-lH[i+nInstances*(r-1)];
-	}
-	logPot[0] += G[GindStart(length,nNodes)+index-1];
+        }
 
-	/* Restitute r by non-gap */
-	/* Look if there is now a gap to the right */
-	if(r<nNodes-1)
-		if(rH[i+nInstances*(r+1)] != 0)
-			{
-				length=rH[i+nInstances*(r+1)];
-				index = (r+1)+1;
-				for(s=1;s<nStates;s++)
-					logPot[s] += G[GindStart(length,nNodes)+index-1];
-			}
-	/* Look if there is a gap to the left */
-	if(r>0)
-		if(lH[i+nInstances*(r-1)] != 0)
-			{	
-				length=lH[i+nInstances*(r-1)];
-				index=(r+1)-length;
-				for(s=1;s<nStates;s++)
-					logPot[s] += G[GindStart(length,nNodes)+index-1];
-			}
+        /* Add GAP parameters */
+        /* Restitute r by a gap */
+        length=1;
+        index=(r+1);
+        if(r<nNodes-1)
+            length=length+rH[i+nInstances*(r+1)];
+
+        if(r>0){
+            length=length+lH[i+nInstances*(r-1)];
+            index=index-lH[i+nInstances*(r-1)];
+        }
+        logPot[0] += G[GindStart(length,nNodes)+index-1];
+
+        /* Restitute r by non-gap */
+        /* Look if there is now a gap to the right */
+        if(r<nNodes-1)
+            if(rH[i+nInstances*(r+1)] != 0)
+                {
+                    length=rH[i+nInstances*(r+1)];
+                    index = (r+1)+1;
+                    for(s=1;s<nStates;s++)
+                        logPot[s] += G[GindStart(length,nNodes)+index-1];
+                }
+        /* Look if there is a gap to the left */
+        if(r>0)
+            if(lH[i+nInstances*(r-1)] != 0)
+                {
+                    length=lH[i+nInstances*(r-1)];
+                    index=(r+1)-length;
+                    for(s=1;s<nStates;s++)
+                        logPot[s] += G[GindStart(length,nNodes)+index-1];
+                }
 
 
         z[0] = 0;
@@ -159,76 +159,76 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
         }
         *fval -= weights[i]*logPot[y[i+nInstances*r]];
         *fval += weights[i]*log(z[0]);
- 
-        
-        
-	/*Gradient:*/
-        
- 
-        for(s = 0; s < nStates; s++) {
-            nodeBel[s] = exp(logPot[s] - log(z[0]));
-        }
-                       
-        y1 = y[i + nInstances*r]; 
-        grad1[y1] -= weights[i]*1;
-            
-        for(s=0; s < nStates; s++) {
-            grad1[s] += weights[i]*nodeBel[s];
-        }
-   
-        for(n=0;n<nNodes;n++) {
-            if(n!=r) {
-                y2 = y[i + nInstances*n];
 
-                grad2[y1+nStates*(y2+nStates*(n-(n>r)))] -= weights[i];                
 
-                for(s=0;s<nStates;s++) {
-                   grad2[s+nStates*(y2+nStates*(n-(n>r)))] += weights[i]*nodeBel[s];
-                }	
+
+        /*Gradient:*/
+
+
+            for(s = 0; s < nStates; s++) {
+                nodeBel[s] = exp(logPot[s] - log(z[0]));
             }
+
+            y1 = y[i + nInstances*r];
+            grad1[y1] -= weights[i]*1;
+
+            for(s=0; s < nStates; s++) {
+                grad1[s] += weights[i]*nodeBel[s];
+            }
+
+            for(n=0;n<nNodes;n++) {
+                if(n!=r) {
+                    y2 = y[i + nInstances*n];
+
+                    grad2[y1+nStates*(y2+nStates*(n-(n>r)))] -= weights[i];
+
+                    for(s=0;s<nStates;s++) {
+                       grad2[s+nStates*(y2+nStates*(n-(n>r)))] += weights[i]*nodeBel[s];
+                    }
+                }
+            }
+
+
+        /* Gap gradient */
+        /* Restitute r by a gap */
+        length=1;
+        index=(r+1);
+        if(r<nNodes-1)
+            length=length+rH[i+nInstances*(r+1)];
+
+        if(r>0){
+            length=length+lH[i+nInstances*(r-1)];
+            index=index-lH[i+nInstances*(r-1)];
         }
+        grad3[GindStart(length,nNodes)+index-1] += weights[i]*nodeBel[0];
+        if(y[i+nInstances*r]==0)
+            grad3[GindStart(length,nNodes)+index-1] -= weights[i];
 
+        /* Restitute r by non-gap */
+        /* Look if there is now a gap to the right */
+        if(r<nNodes-1)
+            if(rH[i+nInstances*(r+1)] != 0)
+                {
+                    length=rH[i+nInstances*(r+1)];
+                    index = (r+1)+1;
+                    for(s=1;s<nStates;s++)
+                        grad3[GindStart(length,nNodes)+index-1] +=weights[i]*nodeBel[s];
+                    if(y[i+nInstances*r] != 0)
+                        grad3[GindStart(length,nNodes)+index-1] -=weights[i];
 
-	/* Gap gradient */
-	/* Restitute r by a gap */
-	length=1;
-	index=(r+1);
-	if(r<nNodes-1)
-		length=length+rH[i+nInstances*(r+1)];
-	
-	if(r>0){
-		length=length+lH[i+nInstances*(r-1)];
-		index=index-lH[i+nInstances*(r-1)];
-	}
-	grad3[GindStart(length,nNodes)+index-1] += weights[i]*nodeBel[0];
-	if(y[i+nInstances*r]==0)
-		grad3[GindStart(length,nNodes)+index-1] -= weights[i];
+                }
+        /* Look if there is a gap to the left */
+        if(r>0)
+            if(lH[i+nInstances*(r-1)] != 0)
+                {
+                    length=lH[i+nInstances*(r-1)];
+                    index=(r+1)-length;
+                    for(s=1;s<nStates;s++)
+                        grad3[GindStart(length,nNodes)+index-1] +=weights[i]*nodeBel[s];
+                    if(y[i+nInstances*r] != 0)
+                        grad3[GindStart(length,nNodes)+index-1] -=weights[i];
 
-	/* Restitute r by non-gap */
-	/* Look if there is now a gap to the right */
-	if(r<nNodes-1)
-		if(rH[i+nInstances*(r+1)] != 0)
-			{
-				length=rH[i+nInstances*(r+1)];
-				index = (r+1)+1;
-				for(s=1;s<nStates;s++)
-					grad3[GindStart(length,nNodes)+index-1] +=weights[i]*nodeBel[s];
-				if(y[i+nInstances*r] != 0)
-					grad3[GindStart(length,nNodes)+index-1] -=weights[i];
-
-			}
-	/* Look if there is a gap to the left */
-	if(r>0)
-		if(lH[i+nInstances*(r-1)] != 0)
-			{	
-				length=lH[i+nInstances*(r-1)];
-				index=(r+1)-length;
-				for(s=1;s<nStates;s++)
-					grad3[GindStart(length,nNodes)+index-1] +=weights[i]*nodeBel[s];
-				if(y[i+nInstances*r] != 0)
-					grad3[GindStart(length,nNodes)+index-1] -=weights[i];
-
-			}
+                }
 
 
 

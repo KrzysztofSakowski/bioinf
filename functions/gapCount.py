@@ -16,9 +16,9 @@ def gapCount(p_matrix):
 
     for m in range(M):
         k = 0
-        for i in range (N):
+        for i in range(N):
             for j in range(i, N):
-                if (p_matrix[j][m]==0):
+                if p_matrix[j][m] == 0:
                     gapStretches[j-i][i] += 1
                 else:
                     break
@@ -26,7 +26,7 @@ def gapCount(p_matrix):
             if p_matrix[i][m] == 0:
                 k += 1
             else:
-                if (k > 0):
+                if k > 0:
                     gapStretchesHist[k-1] += 1
                     k = 0
 
