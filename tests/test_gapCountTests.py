@@ -13,4 +13,5 @@ def test_sequence():
     outputRef = np.zeros((526, 1))
     lH, rH = gapCount(data.astype(dtype="int"))
     rH = rH.astype(dtype="int")
-    assert(np.array_equal(rH, outputRef))
+
+    assert np.array_equal(rH, outputRef)

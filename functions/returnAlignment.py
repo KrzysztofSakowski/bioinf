@@ -32,7 +32,7 @@ def returnAlignment(fastaFile):
     output = np.zeros((B, N), dtype=np.int)
 
     for i in range(B):
-        counter = -1;
+        counter = -1
         for j in range(len(ind)):
             if ind[j] == 1:
                 counter += 1

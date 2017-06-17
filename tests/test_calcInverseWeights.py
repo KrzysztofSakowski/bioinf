@@ -31,4 +31,4 @@ def test_sequence():
 
     weights = np.divide(1, weights)
 
-    assert(np.sum(weights), 20)
+    assert np.sum(weights) == 20
