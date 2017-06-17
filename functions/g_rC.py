@@ -40,6 +40,14 @@ def g_rC(p_matrix, p_weights, p_h_r, p_J_r, p_lambdas, p_rint, p_G, p_pM, p_lH, 
 
     for i in range(0, nInstances):
 
+        #  Some notes on variable names:
+        #  logPot contains, for the current sequence i,
+        #  the exponentials in the pseudolikelihood:
+        #  logPot(s)=h_r(s)+sum_{j!=r}J_{rj}(s,sigma^(i)_j).
+        #  nodeBel is the conditional probability P(sigma_r=s|sigma_{\r}=sigma^(i)_{\r}), i.e.,
+        #  nodeBel(s) = e^[ logPot(s) ] / sum_l e^[ logPot(l) ].
+        #  z is the denominator of nodeBel.
+
         for s in range(0, nNodes):
             logPot[s] = p_h_r[s]
 
@@ -71,6 +79,7 @@ def g_rC(p_matrix, p_weights, p_h_r, p_J_r, p_lambdas, p_rint, p_G, p_pM, p_lH, 
 
                 length = p_rH[i+nInstances*(r+1)]
                 index = (r+1)+1
+
                 for s in range(1, nStates):
                     logPot[s] += p_G[GindStart(length, nNodes)+index-1]
 
@@ -81,6 +90,7 @@ def g_rC(p_matrix, p_weights, p_h_r, p_J_r, p_lambdas, p_rint, p_G, p_pM, p_lH, 
 
                 length = p_lH[i+nInstances*(r-1)]
                 index = (r+1)-length
+
                 for s in range(1, nStates):
                     logPot[s] += p_G[GindStart(length, nNodes)+index-1]
 
@@ -88,8 +98,8 @@ def g_rC(p_matrix, p_weights, p_h_r, p_J_r, p_lambdas, p_rint, p_G, p_pM, p_lH, 
         for s in range(0, nStates):
             z[0] += np.exp(logPot[s])  # TODO exp?
 
-        fval -= p_weights[i] * logPot[y[i + nInstances * r]]
-        fval += p_weights[i] * np.log(z[0])  # TODO log?
+        fval[0] -= p_weights[i] * logPot[y[i + nInstances * r]]
+        fval[0] += p_weights[i] * np.log(z[0])  # TODO log?
 
         # Gradient:
 
@@ -116,6 +126,7 @@ def g_rC(p_matrix, p_weights, p_h_r, p_J_r, p_lambdas, p_rint, p_G, p_pM, p_lH, 
 
         length = 1
         index = (r + 1)
+
         if r < nNodes - 1:
             length = length + p_rH[i + nInstances * (r + 1)]
 
@@ -139,10 +150,12 @@ def g_rC(p_matrix, p_weights, p_h_r, p_J_r, p_lambdas, p_rint, p_G, p_pM, p_lH, 
 
                 for s in range(1, nStates):
                     grad3[GindStart(length, nNodes)+index-1] += p_weights[i] * nodeBel[s]
-                    if y[i+nInstances*r] != 0:
-                        grad3[GindStart(length, nNodes)+index-1] -= p_weights[i]
+
+                if y[i+nInstances*r] != 0:
+                    grad3[GindStart(length, nNodes)+index-1] -= p_weights[i]
 
         # Look if there is a gap to the left
+
         if r > 0:
             if p_lH[i + nInstances * (r - 1)] != 0:
 
@@ -156,12 +169,13 @@ def g_rC(p_matrix, p_weights, p_h_r, p_J_r, p_lambdas, p_rint, p_G, p_pM, p_lH, 
                     grad3[GindStart(length, nNodes)+index-1] -= p_weights[i]
 
     # Add contributions from R_l2
+
     for s in range(0, nStates):
-        fval += p_lambdas[0] * p_h_r[s] * p_h_r[s]
+        fval[0] += p_lambdas[0] * p_h_r[s] * p_h_r[s]
         grad1[s] += p_lambdas[0] * 2 * p_h_r[s]
 
     for j in range(0,  nrGapParam):
-        fval += p_lambdas[2] * p_G[j] * p_G[j]
+        fval[0] += p_lambdas[2] * p_G[j] * p_G[j]
         grad3[j] += p_lambdas[2] * 2 * p_G[j]
 
     for n in range(0, nNodes):
@@ -169,7 +183,7 @@ def g_rC(p_matrix, p_weights, p_h_r, p_J_r, p_lambdas, p_rint, p_G, p_pM, p_lH, 
             for s in range(0, nStates):
                 for t in range(0, nStates):
 
-                    fval += p_lambdas[1] * p_J_r[s+nStates * (t+nStates * (n-(n > r)))] * p_J_r[s+nStates * (t+nStates * (n-(n > r)))]
+                    fval[0] += p_lambdas[1] * p_J_r[s+nStates * (t+nStates * (n-(n > r)))] * p_J_r[s+nStates * (t+nStates * (n-(n > r)))]
                     grad2[s+nStates * (t+nStates * (n-(n > r)))] += p_lambdas[1] * 2 * p_J_r[s+nStates * (t+nStates * (n-(n > r)))]
 
     return fval, grad1, grad2, grad3
