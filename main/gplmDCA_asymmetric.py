@@ -1,10 +1,11 @@
 import numpy as np
+from joblib import Parallel, delayed
+
 from functions import returnAlignment
 from functions import gapMat
 from functions import gapCount
 from functions import calcInverseWeights
 from functions import min_g_r
-
 
 #TODO Test most outputs against matlab
 def gplmDCA_asymmetric(fastafile, outputfile, lambda_h, lambda_J, lambda_G,
@@ -64,15 +65,16 @@ def gplmDCA_asymmetric(fastafile, outputfile, lambda_h, lambda_J, lambda_G,
 
     if nr_of_cores > 1:
         #TODO Add threading
-        # nothing yet
-        return -1
+        w = Parallel(n_jobs=nr_of_cores, backend='threading') (
+            # delayed(sum)(r) for r in range(3))
+            delayed(min_g_r)(Y, weights, N, q, field_lambda, coupling_lambda, gap_lambda, r, M,
+                         nrGapParam, lH, rH, options) for r in range(N))
     else:
         for r in range(N):
             print("Minimizing g_r for node r=", r)
             wr = min_g_r(Y, weights, N, q, field_lambda, coupling_lambda, gap_lambda, r, M,
                          nrGapParam, lH, rH, options)
             w[:][r] = wr
-
     # Extract the coupling estimates from w.
     JJ = np.reshape(w[q: q + q ** 2 * (N - 1)][:], (q, q, N - 1, N))
     Jtemp1 = np.zeros((q, q, N * (N - 1) // 2), dtype=np.int32)

@@ -176,24 +176,24 @@ function [fval,grad] = g_r(wr,Y,weights,N,q,lambdah,lambdaJ,lambdaG,r,M,lH,rH)
 	G=wr((q+q^2*(N-1)+1):end);
 
 	r=int32(r);
-    weights
-    h_r
-    J_r
-    lambdah
-    lambdaJ
-    lambdaG
-    r
-    G
-    M
-    lH
-    rH
+    assignin('base', 'weights', weights)
+    assignin('base', 'h_r', h_r)
+    assignin('base', 'J_r', J_r)
+    assignin('base', 'lambdah', lambdah)
+    assignin('base', 'lambdaJ', lambdaJ)
+    assignin('base', 'lambdaG', lambdaG)
+    assignin('base', 'r', r)
+    assignin('base', 'G', G)
+    assignin('base', 'M', M)
+    assignin('base', 'lH', lH)
+    assignin('base', 'rH', rH)
 	[fval,grad1,grad2,grad3] = g_rC(Y-1,weights,h_r,J_r,[lambdah;lambdaJ;lambdaG],r,G,M,lH,rH);
-    fval
-    grad1
-    grad2
-    grad3
+    assignin('base', 'fval', fval)
+    assignin('base', 'grad1', grad1)
+    assignin('base', 'grad2', grad2)
+    assignin('base', 'grad3', grad3)
     return
-	grad = [grad1(:);grad2(:);grad3(:)];
+    grad = [grad1(:);grad2(:);grad3(:)];
 end
 
 function [N,B,q,Y] = return_alignment(inputfile)
