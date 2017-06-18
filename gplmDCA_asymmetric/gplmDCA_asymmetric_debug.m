@@ -58,9 +58,7 @@ function gplmDCA_asymmetric(fastafile,outputfile, lambda_h,lambda_J,lambda_G,rew
         fprintf('Starting to calculate weights \n...');
         tic
         Y=int32(Y);
-        size(Y)
-        m=calc_inverse_weights(Y-1,reweighting_threshold);
-        weights=1./m
+
         m=calc_inverse_weights(Y-1,reweighting_threshold);
         weights=1./m;
 
