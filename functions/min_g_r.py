@@ -6,7 +6,7 @@ from scipy import optimize
 def min_g_r(Y, weights, N, q, field_lambda, coupling_lambda, gap_lambda, r, M, nrGapParam, lH, rH, options):
     r = int(r)
 
-    funObj = lambda wr: g_r(wr, Y, weights, N, q, field_lambda, coupling_lambda, gap_lambda, r, M, lH, rH)
+    funObj = lambda wr: g_r(wr, Y, weights, N, q, field_lambda, coupling_lambda, gap_lambda, r, M, lH, rH)[0]
 
     wr0 = np.zeros((q + q ** 2 * (N-1)+nrGapParam, 1))
 
