@@ -17,7 +17,7 @@ def g_rC(p_matrix, p_weights, p_h_r, p_J_r, p_lambdas, r, p_G, M, p_lH, p_rH):
 
     fM = float(M)
     fnNodes = float(nNodes)
-    nrGapParam = int(fM*(fnNodes-(fM+1)//2+1))  # // or / ?
+    nrGapParam = int(fM*(fnNodes-(fM+1)/2+1))  # // or / ?
 
     # allocate memory
 
@@ -54,10 +54,9 @@ def g_rC(p_matrix, p_weights, p_h_r, p_J_r, p_lambdas, r, p_G, M, p_lH, p_rH):
 
         for n in range(0, nNodes):
             if n != r:
-                y2 = y[i + nInstances*n]
+                y2 = y[i][n]
                 for s in range(0, nStates):
-                    ind = s + nStates*(y2+nStates*(n-(n > r)))
-                    logPot[s] = p_J_r[s + nStates*(y2+nStates*(n-(n > r)))]
+                    logPot[s] = p_J_r[s][y2][n-(n > r)]
 
         # Add GAP parameters
         # Restitute r by a gap
@@ -65,11 +64,11 @@ def g_rC(p_matrix, p_weights, p_h_r, p_J_r, p_lambdas, r, p_G, M, p_lH, p_rH):
         index = r+1
 
         if r < nNodes-1:
-            length = length + p_rH[i+nInstances*(r+1)]
+            length = length + p_rH[i][r+1]
 
         if r > 0:
-            length = length + p_lH[i+nInstances * (r-1)]
-            index = index - p_lH[i+nInstances * (r-1)]
+            length = length + p_lH[i][r-1]
+            index = index - p_lH[i][r-1]
 
         logPot[0] += p_G[GindStart(length, nNodes)+index-1]
 
@@ -77,9 +76,9 @@ def g_rC(p_matrix, p_weights, p_h_r, p_J_r, p_lambdas, r, p_G, M, p_lH, p_rH):
         # Look if there is now a gap to the right
 
         if r < nNodes-1:
-            if p_rH[i+nInstances*(r+1)] != 0:
+            if p_rH[i][r+1] != 0:
 
-                length = p_rH[i+nInstances*(r+1)]
+                length = p_rH[i][r+1]
                 index = (r+1)+1
 
                 for s in range(1, nStates):
@@ -100,7 +99,7 @@ def g_rC(p_matrix, p_weights, p_h_r, p_J_r, p_lambdas, r, p_G, M, p_lH, p_rH):
         for s in range(0, nStates):
             z[0] += np.exp(logPot[s])  # TODO exp?
 
-        fval[0] -= p_weights[i] * logPot[y[i + nInstances * r]]
+        fval[0] -= p_weights[i] * logPot[y[i][r]]
         fval[0] += p_weights[i] * np.log(z[0])  # TODO log?
 
         # Gradient:
@@ -116,7 +115,7 @@ def g_rC(p_matrix, p_weights, p_h_r, p_J_r, p_lambdas, r, p_G, M, p_lH, p_rH):
 
         for n in range(0, nNodes):
             if n != r:
-                y2 = y[i + nInstances * n]
+                y2 = y[i][n]
 
                 grad2[y1+nStates * (y2+nStates * (n-(n > r)))] -= p_weights[i]
 
@@ -130,24 +129,24 @@ def g_rC(p_matrix, p_weights, p_h_r, p_J_r, p_lambdas, r, p_G, M, p_lH, p_rH):
         index = (r + 1)
 
         if r < nNodes - 1:
-            length = length + p_rH[i + nInstances * (r + 1)]
+            length = length + p_rH[i][r + 1]
 
         if r > 0:
-            length = length + p_lH[i+nInstances * (r-1)]
-            index = index - p_lH[i+nInstances * (r-1)]
+            length = length + p_lH[i][r-1]
+            index = index - p_lH[i][r-1]
 
         grad3[GindStart(length, nNodes) + index - 1] += p_weights[i] * nodeBel[0]
 
-        if y[i + nInstances * r] == 0:
+        if y[i][r] == 0:
             grad3[GindStart(length, nNodes) + index - 1] -= p_weights[i]
 
         # Restitute r by non-gap
         # Look if there is now a gap to the right
 
         if r < nNodes-1:
-            if p_rH[i+nInstances*(r+1)] != 0:
+            if p_rH[i][r+1] != 0:
 
-                length = p_rH[i+nInstances*(r+1)]
+                length = p_rH[i][r+1]
                 index = (r+1)+1
 
                 for s in range(1, nStates):
@@ -159,9 +158,9 @@ def g_rC(p_matrix, p_weights, p_h_r, p_J_r, p_lambdas, r, p_G, M, p_lH, p_rH):
         # Look if there is a gap to the left
 
         if r > 0:
-            if p_lH[i + nInstances * (r - 1)] != 0:
+            if p_lH[i][r - 1] != 0:
 
-                length = p_lH[i + nInstances * (r - 1)]
+                length = p_lH[i][r - 1]
                 index = (r + 1) - length
 
                 for s in range(1, nStates):
@@ -185,7 +184,7 @@ def g_rC(p_matrix, p_weights, p_h_r, p_J_r, p_lambdas, r, p_G, M, p_lH, p_rH):
             for s in range(0, nStates):
                 for t in range(0, nStates):
 
-                    fval[0] += p_lambdas[1] * p_J_r[s+nStates * (t+nStates * (n-(n > r)))] * p_J_r[s+nStates * (t+nStates * (n-(n > r)))]
-                    grad2[s+nStates * (t+nStates * (n-(n > r)))] += p_lambdas[1] * 2 * p_J_r[s+nStates * (t+nStates * (n-(n > r)))]
+                    fval[0] += p_lambdas[1] * p_J_r[s][t][n-(n > r)] * p_J_r[s][t][n-(n > r)]
+                    grad2[s+nStates * (t+nStates * (n-(n > r)))] += p_lambdas[1] * 2 * p_J_r[s][t][n-(n > r)]
 
     return fval, grad1, grad2, grad3

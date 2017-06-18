@@ -6,7 +6,7 @@ def g_r(wr, Y, weights, N, q, lambdah, lambdaJ, lambdaG, r, M, lH, rH):
 
     h_r = np.reshape(wr[0:q], q)
     J_r = np.reshape(wr[q:q+q ** 2*(N-1)], (q, q, N-1))
-    G = wr[(q+q ** 2*(N-1)+1):]
+    G = wr[(q+q ** 2*(N-1)):]
 
     r = int(r)
 
