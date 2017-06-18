@@ -30,13 +30,8 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
 	threshold = mxGetPr(prhs[1]);
     
 	/* compute sizes */
-<<<<<<< HEAD
 	nInstances = mxGetDimensions(prhs[0])[1];
 	nNodes = mxGetDimensions(prhs[0])[0];
-=======
-	nInstances = mxGetDimensions(prhs[0])[0];
-	nNodes = mxGetDimensions(prhs[0])[1];
->>>>>>> 91d58b237e9ec315677292bfa60cc0df39bbc6d0
 
 	/*output*/
 	plhs[0] = mxCreateDoubleMatrix(nInstances, 1, mxREAL);
@@ -56,10 +51,6 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
 				m[j]+=1;
 			}	
 		}	
-<<<<<<< HEAD
     	}
     
-=======
-    	}	
->>>>>>> 91d58b237e9ec315677292bfa60cc0df39bbc6d0
 }

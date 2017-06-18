@@ -60,6 +60,8 @@ function gplmDCA_asymmetric(fastafile,outputfile, lambda_h,lambda_J,lambda_G,rew
         Y=int32(Y);
         size(Y)
         m=calc_inverse_weights(Y-1,reweighting_threshold);
+        weights=1./m
+        m=calc_inverse_weights(Y-1,reweighting_threshold);
         weights=1./m;
 
         fprintf('Finished calculating weights \n');
@@ -176,7 +178,23 @@ function [fval,grad] = g_r(wr,Y,weights,N,q,lambdah,lambdaJ,lambdaG,r,M,lH,rH)
 	G=wr((q+q^2*(N-1)+1):end);
 
 	r=int32(r);
+    weights
+    h_r
+    J_r
+    lambdah
+    lambdaJ
+    lambdaG
+    r
+    G
+    M
+    lH
+    rH
 	[fval,grad1,grad2,grad3] = g_rC(Y-1,weights,h_r,J_r,[lambdah;lambdaJ;lambdaG],r,G,M,lH,rH);
+    fval
+    grad1
+    grad2
+    grad3
+    return
 	grad = [grad1(:);grad2(:);grad3(:)];
 end
 
