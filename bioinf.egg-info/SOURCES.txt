@@ -1,0 +1,13 @@
+setup.cfg
+setup.py
+bioinf.egg-info/PKG-INFO
+bioinf.egg-info/SOURCES.txt
+bioinf.egg-info/dependency_links.txt
+bioinf.egg-info/top_level.txt
+functions/__init__.py
+functions/calcInverseWeights.py
+functions/g_rC.py
+functions/gapCount.py
+functions/gapMat.py
+functions/letter2number.py
+functions/returnAlignment.py
