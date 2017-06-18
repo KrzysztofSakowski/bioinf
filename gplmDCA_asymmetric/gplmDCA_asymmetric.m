@@ -33,14 +33,11 @@ function gplmDCA_asymmetric(fastafile,outputfile, lambda_h,lambda_J,lambda_G,rew
     
 %Read inputfile (removing inserts), remove duplicate sequences, and calculate weights and B_eff.
     [N,B_with_id_seq,q,Y]=return_alignment(fastafile);
-<<<<<<< HEAD
     N
     B_with_id_seq
     q
     Y
     return
-=======
->>>>>>> 91d58b237e9ec315677292bfa60cc0df39bbc6d0
     Y=unique(Y,'rows');
     [lH,rH]=gapMat(int32(Y-1));
     lH=int32(lH);
@@ -66,28 +63,22 @@ function gplmDCA_asymmetric(fastafile,outputfile, lambda_h,lambda_J,lambda_G,rew
         fprintf('Starting to calculate weights \n...');
         tic
         Y=int32(Y);
-<<<<<<< HEAD
         size(Y)
         m=calc_inverse_weights(Y-1,reweighting_threshold);
         weights=1./m
-=======
         m=calc_inverse_weights(Y-1,reweighting_threshold);
         weights=1./m;
->>>>>>> 91d58b237e9ec315677292bfa60cc0df39bbc6d0
 
         fprintf('Finished calculating weights \n');
         toc
     end
-<<<<<<< HEAD
     B_eff=sum(weights)
 
     fprintf('### N = %d B_with_id_seq = %d B = %d B_eff = %.2f q = %d\n',N,B_with_id_seq,B,B_eff,q);
    	return
-=======
     B_eff=sum(weights);
     fprintf('### N = %d B_with_id_seq = %d B = %d B_eff = %.2f q = %d\n',N,B_with_id_seq,B,B_eff,q);
    	
->>>>>>> 91d58b237e9ec315677292bfa60cc0df39bbc6d0
 %Prepare inputs to optimizer.
     field_lambda=lambda_h*B_eff;   
     coupling_lambda=lambda_J*B_eff/2;    %Divide by 2 to keep the size of the coupling regularizaion equivalent to symmetric variant of plmDCA.
