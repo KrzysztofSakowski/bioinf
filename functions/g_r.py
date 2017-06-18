@@ -1,5 +1,5 @@
 import numpy as np
-from functions import g_rC
+from functions.g_rC import g_rC
 
 
 def g_r(wr, Y, weights, N, q, lambdah, lambdaJ, lambdaG, r, M, lH, rH):

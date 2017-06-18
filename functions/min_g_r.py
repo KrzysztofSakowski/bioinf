@@ -1,5 +1,5 @@
 import numpy as np
-from functions import g_r
+from functions.g_r import g_r
 from scipy import optimize
 
 
