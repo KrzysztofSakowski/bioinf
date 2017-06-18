@@ -91,8 +91,17 @@ def gplmDCA_asymmetric(fastafile, outputfile, lambda_h, lambda_J, lambda_G,
     J2 = np.zeros((q, q, N * (N - 1) // 2), dtype=np.int32)
 
     for l in range((N * (N - 1) // 2)):
-        pass
-        #J1[:][:][l] = JTemp1[:][:][l] -
+        J1[:, :, l] = np.add(np.subtract(np.subtract(
+            Jtemp1[:, :, l]
+            , np.matlib.repmat(np.mean(Jtemp1[:, :, l]), q, 1))
+            , np.matlib.repmat(np.mean(Jtemp1[:, :, l], axis=1), 1, q))
+            , np.mean(np.mean(Jtemp1[:, :, l])))
+
+        J2[:, :, l] = np.add(np.subtract(np.subtract(
+            Jtemp2[:, :, l]
+            , np.matlib.repmat(np.mean(Jtemp2[:, :, l]), q, 1))
+            , np.matlib.repmat(np.mean(Jtemp2[:, :, l], axis=1), 1, q))
+            , np.mean(np.mean(Jtemp2[:, :, l])))
 
     # Take J_ij as the average of the estimates from g_i and g_j.
     J = np.multiply(np.add(J1, J2), 0.5)
@@ -103,12 +112,21 @@ def gplmDCA_asymmetric(fastafile, outputfile, lambda_h, lambda_J, lambda_G,
     l = 1
     for i in range(N-1):
         for j in range(i+1, N):
-            # NORMS[i][j] = np.linalg.norm(J[:][:][l], 'fro')
+            NORMS[i][j] = np.linalg.norm(J[:][:][l], 'fro')  # TODO
             NORMS[j][i] = NORMS[j][i]
             l += 1
 
     #Calculate final scores, CN_ij=FN_ij-(FN_i-)(FN_-j)/(FN_--), where '-'
     #denotes average.
 
+    norm_means = np.division(np.multiply(np.mean(NORMS), N), N-1)
+    norm_means_all = np.division(np.multiply(np.mean(np.mean(NORMS)), N), N-1)
 
+    CORRNORMS = np.subtract(NORMS, np.division(np.multiply(np.transpose(norm_means), norm_means), norm_means_all))
 
+    output = []
+    for i in range(N-1):
+        for j in range(i + 1, N):
+            output.append((i, j, CORRNORMS[i][j]))  # TODO is this ok?
+
+    # TODO print out
