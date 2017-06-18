@@ -2,7 +2,7 @@ from functions import returnAlignment
 import numpy as np
 
 def test_sequence():
-    outputRef = np.zeros((526, 1))  # TODO shape of Y is (4, 526)
+    outputRef = np.zeros((526, ), dtype=np.int32)
     i = 0
     with open('fastaOutput.txt') as file:
         for line in file.readlines():
@@ -17,8 +17,7 @@ def test_sequence():
     N_ref = 526
     B_ref = 4
     q_ref = 21
-
     assert N == N_ref
     assert B == B_ref
     assert q == q_ref
-    assert np.array_equal(Y, outputRef)  # TODO fails, shapes differ
+    assert np.array_equal(np.array(Y[0]), np.array(outputRef))
