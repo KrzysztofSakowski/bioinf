@@ -5,15 +5,15 @@ def GindStart(sigma, N):
     return (sigma - 1) * N - (sigma - 1) * ((sigma - 1) + 1) // 2 + sigma - 1
 
 
-def g_rC(p_matrix, p_weights, p_h_r, p_J_r, p_lambdas, p_rint, p_G, p_pM, p_lH, p_rH):
+def g_rC(p_matrix, p_weights, p_h_r, p_J_r, p_lambdas, r, p_G, M, p_lH, p_rH):
     # compute sizes
     y = p_matrix
 
     nNodes = p_matrix.shape[1]
-    nStates = p_h_r.shape[1]
+    nStates = p_h_r.shape[0]
     nInstances = p_matrix.shape[0]
 
-    M = p_pM[0]  # ?
+    # M = p_pM[0]  # ?
 
     fM = float(M)
     fnNodes = float(nNodes)
@@ -36,7 +36,8 @@ def g_rC(p_matrix, p_weights, p_h_r, p_J_r, p_lambdas, p_rint, p_G, p_pM, p_lH, 
     for i in range(0, nrGapParam):
         grad3[0] = 0.0
 
-    r = p_rint[0] - 1
+    # r = p_rint[0] - 1
+    r = r - 1
 
     for i in range(0, nInstances):
 
@@ -48,13 +49,14 @@ def g_rC(p_matrix, p_weights, p_h_r, p_J_r, p_lambdas, p_rint, p_G, p_pM, p_lH, 
         #  nodeBel(s) = e^[ logPot(s) ] / sum_l e^[ logPot(l) ].
         #  z is the denominator of nodeBel.
 
-        for s in range(0, nNodes):
+        for s in range(0, nStates):
             logPot[s] = p_h_r[s]
 
         for n in range(0, nNodes):
             if n != r:
                 y2 = y[i + nInstances*n]
                 for s in range(0, nStates):
+                    ind = s + nStates*(y2+nStates*(n-(n > r)))
                     logPot[s] = p_J_r[s + nStates*(y2+nStates*(n-(n > r)))]
 
         # Add GAP parameters
