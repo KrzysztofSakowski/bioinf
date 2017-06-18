@@ -10,8 +10,18 @@ def min_g_r(Y, weights, N, q, field_lambda, coupling_lambda, gap_lambda, r, M, n
 
     wr0 = np.zeros((q + q ** 2 * (N-1)+nrGapParam, 1))
 
-    #wr = minFunc(funObj,wr0,options);
+    options_dict = {
+        'disp': None,
+        'maxls': 20,
+        'iprint': -1,
+        'gtol': 1e-05,
+        'eps': 1e-08,
+        'maxiter': 15000,
+        'ftol': 2.220446049250313e-09,
+        'maxcor': 10,
+        'maxfun': 15000
+    }
 
-    optimized_result = optimize.minimize(funObj, wr0, method='BFGS')  # TODO add options
+    optimized_result = optimize.minimize(funObj, wr0, method='L-BFGS-B', options=options_dict)
 
-    return np.zeros((q + q**2 * (N-1), 1), dtype=np.int32) #temp solution
+    return optimized_result.x
