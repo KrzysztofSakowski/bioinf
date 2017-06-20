@@ -36,9 +36,6 @@ def g_rC(p_matrix, p_weights, p_h_r, p_J_r, p_lambdas, r, p_G, M, p_lH, p_rH):
     for i in range(0, nrGapParam):
         grad3[0] = 0.0
 
-    # r = p_rint[0] - 1
-    r = r - 1
-
     for i in range(0, nInstances):
 
         #  Some notes on variable names:
@@ -56,7 +53,7 @@ def g_rC(p_matrix, p_weights, p_h_r, p_J_r, p_lambdas, r, p_G, M, p_lH, p_rH):
             if n != r:
                 y2 = y[i][n]
                 for s in range(0, nStates):
-                    logPot[s] = p_J_r[s][y2][n-(n > r)]
+                    logPot[s] += p_J_r[s][y2][n-(n > r)]
 
         # Add GAP parameters
         # Restitute r by a gap
@@ -87,9 +84,9 @@ def g_rC(p_matrix, p_weights, p_h_r, p_J_r, p_lambdas, r, p_G, M, p_lH, p_rH):
         # Look if there is a gap to the left
 
         if r > 0:
-            if p_lH[i+nInstances*(r-1)] != 0:
+            if p_lH[i][r-1] != 0:
 
-                length = p_lH[i+nInstances*(r-1)]
+                length = p_lH[i][r-1]
                 index = (r+1)-length
 
                 for s in range(1, nStates):
@@ -107,7 +104,7 @@ def g_rC(p_matrix, p_weights, p_h_r, p_J_r, p_lambdas, r, p_G, M, p_lH, p_rH):
         for s in range(0, nStates):
             nodeBel[s] = np.exp(logPot[s] - np.log(z[0]))
 
-        y1 = y[i + nInstances * r]
+        y1 = y[i][r]
         grad1[y1] -= p_weights[i] * 1
 
         for s in range(0, nStates):

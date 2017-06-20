@@ -65,6 +65,7 @@ def gplmDCA_asymmetric(fastafile, outputfile, lambda_h, lambda_J, lambda_G,
 
     if nr_of_cores > 1:
         #TODO Add threading
+        print("Multithread init")
         w = Parallel(n_jobs=nr_of_cores, backend='threading') (
             # delayed(sum)(r) for r in range(3))
             delayed(min_g_r)(Y, weights, N, q, field_lambda, coupling_lambda, gap_lambda, r, M,

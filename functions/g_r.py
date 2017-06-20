@@ -11,6 +11,7 @@ def g_r(wr, Y, weights, N, q, lambdah, lambdaJ, lambdaG, r, M, lH, rH):
     r = int(r)
 
     fval, grad1, grad2, grad3 = g_rC(Y-1, weights, h_r, J_r, [lambdah, lambdaJ, lambdaG], r, G, M, lH, rH)
-    grad = [grad1[:], grad2[:], grad3[:]]
+
+    grad = np.concatenate((grad1, grad2, grad3), axis=0)
 
     return fval, grad
