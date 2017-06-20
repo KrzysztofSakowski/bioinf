@@ -41,9 +41,8 @@ def gplmDCA_asymmetric(fastafile, outputfile, lambda_h, lambda_J, lambda_G,
     if reweighting_threshold > 0.0:
         print("Starting to calculate weights...")
         Y = np.array(Y, dtype=np.int32)
-        m = calcInverseWeights(np.subtract(Y, 1), reweighting_threshold)
-
-        weights = np.divide(1, weights)
+        m = calcInverseWeights(np.transpose(np.subtract(Y, 1)), reweighting_threshold)
+        weights = np.divide(1, m)
 
         print("Finished calculating weights.")
 
@@ -61,7 +60,7 @@ def gplmDCA_asymmetric(fastafile, outputfile, lambda_h, lambda_J, lambda_G,
     Y = np.array(Y, dtype=np.int32)
     q = np.array(q, dtype=np.int32)
 
-    w = np.zeros((q + q ** 2 * (N - 1) + nrGapParam, N), dtype=np.int32)
+    w = np.zeros((N, q + q ** 2 * (N - 1) + nrGapParam), dtype=np.int32)
 
     if nr_of_cores > 1:
         #TODO Add threading
@@ -75,7 +74,8 @@ def gplmDCA_asymmetric(fastafile, outputfile, lambda_h, lambda_J, lambda_G,
             print("Minimizing g_r for node r=", r)
             wr = min_g_r(Y, weights, N, q, field_lambda, coupling_lambda, gap_lambda, r, M,
                          nrGapParam, lH, rH, options)
-            w[:][r] = wr
+            w[r]= wr
+        w = np.reshape(w, ((q + q ** 2 * (N - 1) + nrGapParam), N))
     # Extract the coupling estimates from w.
     JJ = np.reshape(w[q: q + q ** 2 * (N - 1)][:], (q, q, N - 1, N))
     Jtemp1 = np.zeros((q, q, N * (N - 1) // 2), dtype=np.int32)

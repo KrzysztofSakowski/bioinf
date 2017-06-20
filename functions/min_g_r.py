@@ -8,12 +8,11 @@ def min_g_r(Y, weights, N, q, field_lambda, coupling_lambda, gap_lambda, r, M, n
 
     funObj = lambda wr: g_r(wr, Y, weights, N, q, field_lambda, coupling_lambda, gap_lambda, r, M, lH, rH)[0]
     gradObj= lambda wr: g_r(wr, Y, weights, N, q, field_lambda, coupling_lambda, gap_lambda, r, M, lH, rH)[1]
-
-    wr0 = np.zeros((q + q ** 2 * (N-1)+nrGapParam, 1))
+    wr0 = np.zeros((q + q ** 2 * (N - 1) + nrGapParam, 1))
 
     options_dict = {
         'disp': True,
-        'maxls': 20,
+        'maxls': 5,
         'iprint': -1,
         'gtol': 1e-05,
         'eps': 1e-08,
@@ -24,6 +23,6 @@ def min_g_r(Y, weights, N, q, field_lambda, coupling_lambda, gap_lambda, r, M, n
     }
 
     optimized_result = optimize.minimize(funObj, wr0, method='L-BFGS-B', options=options_dict, jac=gradObj)
-    # optimized_result = optimize.minimize(funObj, wr0, method='BFGS', options=options_dict)
-
+    # optimized_result = optimize.minimize(funObj, wr0, method='BFGS', options=options_dict, jac=gradObj)
+    print(optimized_result.message)
     return optimized_result.x

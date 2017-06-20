@@ -30,8 +30,10 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
 	threshold = mxGetPr(prhs[1]);
     
 	/* compute sizes */
-	nInstances = mxGetDimensions(prhs[0])[1];
-	nNodes = mxGetDimensions(prhs[0])[0];
+	nInstances = mxGetDimensions(prhs[0])[1]   
+	nNodes = mxGetDimensions(prhs[0])[0]
+    printf("PRINTF nINSTANCES: %d\n", nInstances);
+    printf("PRINTF nNODES: %d\n", nNodes);
 
 	/*output*/
 	plhs[0] = mxCreateDoubleMatrix(nInstances, 1, mxREAL);

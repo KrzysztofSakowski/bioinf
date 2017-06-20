@@ -94,6 +94,7 @@ function gplmDCA_asymmetric(fastafile,outputfile, lambda_h,lambda_J,lambda_G,rew
             disp(strcat('Minimizing g_r for node r=',int2str(r)))       
             wr=min_g_r(Y,weights,N,q,field_lambda,coupling_lambda,gap_lambda,r,M,nrGapParam,lH,rH,options);
             w(:,r)=wr;
+            size(w)
         end
         toc
     end
@@ -166,7 +167,8 @@ function [wr]=min_g_r(Y,weights,N,q,field_lambda,coupling_lambda,gap_lambda,r,M,
     r=int32(r);
     funObj=@(wr)g_r(wr,Y,weights,N,q,field_lambda,coupling_lambda,gap_lambda,r,M,lH,rH);        
     wr0=zeros(q+q^2*(N-1)+nrGapParam,1);
-    wr=minFunc(funObj,wr0,options);    
+    wr=minFunc(funObj,wr0,options); 
+    size(wr)
 end
 
 function [fval,grad] = g_r(wr,Y,weights,N,q,lambdah,lambdaJ,lambdaG,r,M,lH,rH)
@@ -192,7 +194,7 @@ function [fval,grad] = g_r(wr,Y,weights,N,q,lambdah,lambdaJ,lambdaG,r,M,lH,rH)
     assignin('base', 'grad1', grad1)
     assignin('base', 'grad2', grad2)
     assignin('base', 'grad3', grad3)
-    return
+   
     grad = [grad1(:);grad2(:);grad3(:)];
 end
 
